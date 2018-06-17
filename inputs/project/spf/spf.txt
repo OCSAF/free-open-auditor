@@ -1,0 +1,5 @@
+::red::KEINE -all DIREKTIVE IM SPF-RECORD VORHANDEN! Der SPF bleibt so wirkunsgslos *Phishing-Gefahr*. SPF Eintrag ergänzen!::-all::~all
++all::red::+all PASS DIREKTIVE VORHANDEN! Der SPF bleibt so wirkungslos *Phishing-Gefahr*. -all Einstellung prüfen::-all::~all
+-all::green::-all Fail Direktive vorhanden: Korrekte SPF-Einstellung definiert.::::
+~all::yellow::~all SoftFail Direktive vorhanden: -all Einstellung prüfen.::-all::
+?all::yellow::?all Neutral Direktive vorhanden: nicht sicher, -all Einstellung prüfen.::-all::~all
