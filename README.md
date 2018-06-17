@@ -1,4 +1,4 @@
-# free-open-auditor
+# free-open-auditor (BETA)
 
 Free and open cyber-security auditing tool with collective intelligence.
 This tool is part of the Open Cyber Security Analysis Framework.
