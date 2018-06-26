@@ -51,18 +51,18 @@ mail_lookup() {
 
 	if [ "${mailserver_ipv4[0]}" == "" ]
 		then
-		echo -e "\033[31mKEIN MAILSERVER GEFUNDEN!:\033[0m"
+		echo -e "\033[31mNO MAIL SERVER FOUND!:\033[0m"
 	elif [ "${mailserver_ipv4[1]}" == "" ]
 		then
-		echo -e "\033[31mKEIN REDUNDANTER MAILSERVER GEFUNDEN!:\033[0m"
+		echo -e "\033[31mNO REDUNDANT MAIL SERVER FOUND!:\033[0m"
 	elif [ "${mailserver_ipv4[0]}" != "${mailserver_ipv4[1]}" ]
 		then
-		echo -e "\033[32mRedundanter Mailserver gefunden:\033[0m"
+		echo -e "\033[32mREDUNDANT MAIL SERVER FOUND:\033[0m"
 	elif [ "${mailserver_ipv4[0]}" != "${mailserver_ipv4[2]}" ]
 		then
-		echo -e "\033[32mRedundanter Mailserver gefunden:\033[0m"
+		echo -e "\033[32mREDUNDANT MAIL SERVER FOUND:\033[0m"
 	else
-		echo -e "\033[31mKEIN REDUNDANTER MAILSERVER GEFUNDEN!:\033[0m"
+		echo -e "\033[31mNO REDUNDANT MAIL SERVER FOUND!:\033[0m"
 	fi	
 	
 	#echo ${mail[*]}
@@ -83,9 +83,9 @@ mail_lookup() {
 			geotld=($(geoiplookup ${mailserver_ipv4[$i]} | grep "GeoIP Country Edition:" | cut -d "," -f1 | cut -d " " -f4))
 			geoCheck="$(echo ${geotld[*]} | sed -e "s/$tld//g" | sed 's/^[ \t]*//')"
 			if [ "${geoCheck[*]}" == "" ]; then
-				echo -e "Serverstandort: \033[32m${geotld[*]}-Server im gleichen Land wie die Domain-Endung.\033[0m [$tld]"
+				echo -e "Server location: \033[32m${geotld[*]}-Server in the same country as the domain extension.\033[0m [$tld]"
 			else
-				echo -e "Serverstandort: \033[33m${geotld[*]}-Server evtl. nicht im gleichen Land wie die Domain-Endung.\033[0m [$tld]"
+				echo -e "Server location: \033[33m${geotld[*]}-Server may not be in the same country as the domain extension.\033[0m [$tld]"
 			fi
 			
 			ip_listed+=("${mailserver_ipv4[$i]}")
@@ -114,9 +114,9 @@ mail_lookup() {
 			geotld=($(geoiplookup ${mailserver_ipv4[$i]} | grep "GeoIP Country Edition:" | cut -d "," -f1 | cut -d " " -f4))
 			geoCheck="$(echo ${geotld[*]} | sed -e "s/$tld//g" | sed 's/^[ \t]*//')"
 			if [ "${geoCheck[*]}" == "" ]; then
-				echo -e "Serverstandort: \033[32m${geotld[*]}-Server im gleichen Land wie die Domain-Endung.\033[0m [$tld]"
+				echo -e "Server location: \033[32m${geotld[*]}-Server in the same country as the domain extension.\033[0m [$tld]"
 			else
-				echo -e "Serverstandort: \033[33m${geotld[*]}-Server evtl. nicht im gleichen Land wie die Domain-Endung.\033[0m [$tld]"
+				echo -e "Server location: \033[33m${geotld[*]}-Server may not be in the same country as the domain extension.\033[0m [$tld]"
 			fi
 			
 			ip_listed+=("${mailserver_ipv4[$i]}")
@@ -185,9 +185,9 @@ webserver_lookup() {
 				geotld=($(geoiplookup ${arecord2[$i]} | grep "GeoIP Country Edition:" | cut -d "," -f1 | cut -d " " -f4))
 				geoCheck="$(echo ${geotld[*]} | sed -e "s/$tld//g" | sed 's/^[ \t]*//')"
 				if [ "${geoCheck[*]}" == "" ]; then
-					echo -e "Serverstandort: \033[32m${geotld[*]}-Server im gleichen Land wie die Domain-Endung.\033[0m [$tld]"
+					echo -e "Server location: \033[32m${geotld[*]}-Server in the same country as the domain extension.\033[0m [$tld]"
 				else
-					echo -e "Serverstandort: \033[33m${geotld[*]}-Server evtl. nicht im gleichen Land wie die Domain-Endung.\033[0m [$tld]"
+					echo -e "Server location: \033[33m${geotld[*]}-Server may not be in the same country as the domain extension.\033[0m [$tld]"
 				fi
 
 				echo "Reverse-Lookup: " $reverse2
@@ -216,9 +216,9 @@ webserver_lookup() {
 				geotld=($(geoiplookup ${arecord[$i]} | grep "GeoIP Country Edition:" | cut -d "," -f1 | cut -d " " -f4))
 				geoCheck="$(echo ${geotld[*]} | sed -e "s/$tld//g" | sed 's/^[ \t]*//')"
 				if [ "${geoCheck[*]}" == "" ]; then
-					echo -e "Serverstandort: \033[32m${geotld[*]}-Server im gleichen Land wie die Domain-Endung.\033[0m [$tld]"
+					echo -e "Server location: \033[32m${geotld[*]}-Server in the same country as the domain extension.\033[0m [$tld]"
 				else
-					echo -e "Serverstandort: \033[33m${geotld[*]}-Server evtl. nicht im gleichen Land wie die Domain-Endung.\033[0m [$tld]"
+					echo -e "Server location: \033[33m${geotld[*]}-Server may not be in the same country as the domain extension.\033[0m [$tld]"
 				fi
 	
 				echo "Reverse-Lookup: " $reverse3
@@ -431,10 +431,10 @@ spf_check() {
 					fi
 
 					if [ "$spf_file_value4" != "" -a "$spf_file_value5" != "" ]; then
-						echo Vorschlag Hardfail: '"'$spf_record -all'"'
-						echo Vorschlag Softfail: '"'$spf_record ~all'"'
+						echo Proposal hardfail: '"'$spf_record -all'"'
+						echo Proposal softfail: '"'$spf_record ~all'"'
 					elif [ "$spf_file_value4" != "" -a "$spf_file_value5" == "" ]; then
-						echo Vorschlag Softfail: '"'$spf_record -all'"'
+						echo Proposal softfail: '"'$spf_record -all'"'
 					fi
 					;;
 				redirect)
@@ -459,22 +459,22 @@ spf_check() {
 								fi
 
 								if [ "$spf_file_value4" != "" -a "$spf_file_value5" != "" ]; then
-									echo Vorschlag Hardfail: '"'$spf_record -all'"'
-									echo Vorschlag Softfail: '"'$spf_record ~all'"'
+									echo Proposal hardfail: '"'$spf_record -all'"'
+									echo Proposal softfail: '"'$spf_record ~all'"'
 								elif [ "$spf_file_value4" != "" -a "$spf_file_value5" == "" ]; then
-									echo Vorschlag Softfail: '"'$spf_record -all'"'
+									echo Proposal softfail: '"'$spf_record -all'"'
 								fi
 						esac
 					else
 						echo "SPF redirected to:"
-						echo -e "\033[31m*Kein SPF Eintrag: Es besteht die Gefahr von Phishing-Mails. SPF Eintrag ergänzen!*\033[0m"
+						echo -e "\033[31m*No SPF entry: There is a risk of phishing emails. Add SPF entry!*\033[0m"
 					fi
 					;;
 			esac
 		done <./inputs/project/spf/spf.txt
 
 	else	
-		echo -e "\033[31m*Kein SPF Eintrag: Es besteht die Gefahr von Phishing-Mails. SPF Eintrag ergänzen!*\033[0m"
+		echo -e "\033[31m*No SPF entry: There is a risk of phishing emails. Add SPF entry!*\033[0m"
 	fi
 
 	echo "Details: https://de.wikipedia.org/wiki/Sender_Policy_Framework"
@@ -572,9 +572,9 @@ harvester_osint() {
 	
 	if [ "${mail_checked[*]}" != "" ]; then
 		if [ "${mail_checked[1]}" == "" ]; then
-			echo -e "\033[33m$mail_num E-Mailadresse gefunden!\033[0m"
+			echo -e "\033[33m$mail_num Email address found!\033[0m"
 		else
-			echo -e "\033[33m$mail_num E-Mailadressen gefunden!\033[0m"
+			echo -e "\033[33m$mail_num Email address found!\033[0m"
 		fi
 
 		for ((i=0;i<${#mail_checked[*]};i++))
@@ -583,7 +583,7 @@ harvester_osint() {
 		done	
 		
 	else
-		echo -e "\033[32mKeine E-Mailadressen gefunden.\033[0m"
+		echo -e "\033[32mNo email address found.\033[0m"
 	fi
 	
 	echo "----------------------"
@@ -601,7 +601,7 @@ pwned_check() {
 
 	if [ "${mail_checked[*]}" == "" ]; then
 	
-		echo -e "\033[32mKeine E-Mailadressen zum prüfen vorhanden.\033[0m"
+		echo -e "\033[32mNo email address available to check.\033[0m"
 	else
 		for ((i=0;i<${#mail_checked[*]};i++))
 		do 
@@ -678,27 +678,27 @@ mail_redundanz() {
 
 if [ "${mailCheckIPv4[0]}" == "" ]
 	then
-	echo -e "\033[31m*KEIN MAILSERVER GEFUNDEN!*\033[0m"
+	echo -e "\033[31m*NO MAIL SERVER FOUND!*\033[0m"
 elif [ "${mailCheckIPv4[1]}" == "" ]
 	then
-	echo -e "\033[31m*KEIN REDUNDANTER MAILSERVER GEFUNDEN!*\033[0m"
+	echo -e "\033[31m*NO REDUNDANT MAIL SERVER FOUND!*\033[0m"
 elif [ "${mailCheckIPv4[0]}" != "${mailCheckIPv4[1]}" ]
 	then
-	echo -e "\033[32m*Redundanter Mailserver gefunden.*\033[0m"
+	echo -e "\033[32m*REDUNDANT MAIL SERVER FOUND.*\033[0m"
 elif [ "${mailCheckIPv4[0]}" != "${mailCheckIPv4[2]}" ]
 	then
-	echo -e "\033[32m*Redundanter Mailserver gefunden*\033[0m"
+	echo -e "\033[32m*REDUNDANT MAIL SERVER FOUND*\033[0m"
 else
-	echo -e "\033[31m*KEIN REDUNDANTER MAILSERVER GEFUNDEN!*\033[0m"
+	echo -e "\033[31m*NO REDUNDANT MAIL SERVER FOUND!*\033[0m"
 fi
 
 #Auf Online Mail-Dienste prüfen
 mailOnline=$(echo $mail | cut -d "." -f2-6)
 #echo "MailDIENST: $mailOnline" #Check für case Eintrag
 case $mailOnline in
-	mail.protection.outlook.com.)	echo "Microsoft Exchange Online / Office365 wird verwendet."
+	mail.protection.outlook.com.)	echo "Microsoft Exchange Online / Office365 found."
 		;;
-	l.google.com.)			echo "Google MAIL (Gmail) wird verwendet."
+	l.google.com.)			echo "Google MAIL (Gmail) found."
 		;;
 esac
 echo ""
@@ -725,25 +725,25 @@ mail_loadbalance() {
 
 if [ "${check1[*]}" != "${check2[*]}" ]
 	then
-	echo -e "\033[32m*Mailserver Host-Name Loadbalancing erkannt! (3 DNS-Queries)*\033[0m"
+	echo -e "\033[32m*Mail server host-name load-balancing found! (3 DNS-Queries)*\033[0m"
 	echo -e "\033[32mDNS-Query 1:\033[0m" ${check1[*]}
 	echo -e "\033[32mDNS-Query 2:\033[0m" ${check2[*]}
 	echo "DNS-Query 3:" ${check3[*]}
 elif [ "${check1[*]}" != "${check3[*]}" ]
 	then
-	echo -e "\033[32m*Mailserver Host-Name Loadbalancing erkannt! (3 DNS-Queries)*\033[0m"
+	echo -e "\033[32m*Mail server host-name load-balancing found! (3 DNS-Queries)*\033[0m"
 	echo -e "\033[32mDNS-Query 1:\033[0m" ${check1[*]}
 	echo "DNS-Query 2:" ${check2[*]}
 	echo -e "\033[32mDNS-Query 3:\033[0m" ${check3[*]}
 elif [ "${check2[*]}" != "${check3[*]}" ]
 	then
-	echo -e "\033[32m*Mailserver Host-Name Loadbalancing erkannt!(3 DNS-Queries)*\033[0m"
+	echo -e "\033[32m*Mail server host-name load-balancing found!(3 DNS-Queries)*\033[0m"
 	echo "DNS-Query 1:" ${check1[*]}
 	echo -e "\033[32mDNS-Query 2:\033[0m" ${check2[*]}
 	echo -e "\033[32mDNS-Query 3:\033[0m" ${check3[*]}
 else
-	echo "*Kein Mailserver Loadbalancing erkannt. (3 DNS-Queries)*"
-	echo "Für höhere Zuverlässigkeit Script wiederholen!"
+	echo "*No mail server load-balancing found. (3 DNS-Queries)*"
+	echo "Repeat the script for higher reliability!"
 fi
 }
 
@@ -760,22 +760,22 @@ server_location() {
 	geoCheck="$(echo ${geotld[*]} | sed -e "s/$tld//g" | sed 's/^[ \t]*//')"
 
 	if [ "${geoCheck[*]}" == "" ]; then
-		echo -e "\033[32m*Standorte Mailserver im gleichen Land wie die Domain-Endung.*\033[0m [$tld]"
+		echo -e "\033[32m*Mail server location in the same country as the domain extension.*\033[0m [$tld]"
 	else
-		echo -e "\033[33m*Standorte Mailserver evtl. nicht im gleichen Land wie die Domain-Endung.*\033[0m [$tld]"
+		echo -e "\033[33m*Mail server location may not be in the same country as the domain extension.*\033[0m [$tld]"
 	fi
 
-	echo "Standorte der Mailserver hier gegenprüfen (MX GEO-IP Länderkürzel):" "["${geotld[*]}"]"
+	echo "Check the locations of the mail servers here (MX GEO-IP country code):" "["${geotld[*]}"]"
 }
 ############################################################
 
 blacklist_check() {
 echo -e "\033[4mIP-Blacklist Check - SPAM/Malware:\033[0m"
 if  [ "$bl_listed" == "" ];then
-echo -e "\033[32m*In keiner geprüften Blacklist gelisted.*\033[0m"
+echo -e "\033[32m*Not listed on any blacklist.*\033[0m"
 else
-echo -e "\033[31m*In Blacklist gelisted!*\033[0m"
-echo "Hier gelisted (Host:Blacklist):"
+echo -e "\033[31m*Blacklisted!*\033[0m"
+echo "Listed here (Host:Blacklist):"
 for ((i=0;i<${#blListed[*]};i++))
 	do 
 		echo  ${bl_listed[$i]}
@@ -786,14 +786,11 @@ if [ "$mailOsint" == "y" ];then
 	echo -e "\033[4mE-MAIL OSINT:\033[0m"
 	if [ "${mail_checked[*]}" != "" ]; then
 		if [ "${mail_checked[1]}" == "" ]; then
-			echo -e "\033[33m$mail_num E-Mailadresse gefunden! Oben Details prüfen.\033[0m"
-			echo ${mail_pwned[*]}
-		else
-			echo -e "\033[33m$mail_num E-Mailadressen gefunden! Oben Details prüfen.\033[0m"
+			echo -e "\033[33m$mail_num Email address found. Check details above.\033[0m"
 			echo ${mail_pwned[*]}
 		fi
 	else
-		echo -e "\033[32mKeine E-Mailadressen gefunden.\033[0m"
+		echo -e "\033[32mNo email address found.\033[0m"
 	fi
 echo ""
 fi
