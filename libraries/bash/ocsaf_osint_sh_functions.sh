@@ -410,11 +410,13 @@ spf_check() {
 			spf_file_value3=$(echo "$line" | awk -F '::' '{print $3}')
 			spf_file_value4=$(echo "$line" | awk -F '::' '{print $4}')
 			spf_file_value5=$(echo "$line" | awk -F '::' '{print $5}')
-			spf_record=$(echo $spf | awk -F '"' '{print $2}' | awk -F "$spf_file_value1" '{print $1}')
 			
-			#spf_file_value1=$(echo "$line" | cut -d "::" -f1)
-			#spf_record=$(echo $spf | awk -F '"' '{print $2}' | )
-
+			if [ "$spf_value" != "" ]; then
+				spf_record=$(echo $spf | awk -F '"' '{print $2}' | awk -F "$spf_file_value1" '{print $1}')
+			else
+				spf_record=$(echo $spf | awk -F '"' '{print $2}')
+			fi
+			
 			case $spf_value in
 				"$spf_file_value1")
 					echo ""
