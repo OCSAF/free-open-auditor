@@ -165,9 +165,9 @@ fi
 
 #Mail Loadbalance Check - OSINT-Modul
 if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$mailserver_osint" == "1" ]; then
-	echo "##################################################################"
-	echo "####  HOSTNAME MAIL-SERVER-LOADBALANCE-CHECK - VERFÜGBARKEIT  ####"
-	echo "##################################################################"
+	echo "##################################################"
+	echo "####  HOSTNAME MAIL-SERVER-LOADBALANCE-CHECK  ####"
+	echo "##################################################"
 	echo ""
 	mail_loadbalance
 	echo ""
