@@ -5,9 +5,9 @@ This tool is part of the Open Cyber Security Analysis Framework.
 
 The free-open-auditor tool runs on KALI LINUX™ and requires the following packages:
 
-- apt-get install geoip-bin -y
-- apt-get install jq -y
-- easy_install shodan (This API functionality is not yet integrated!)
+    apt-get install geoip-bin -y
+    apt-get install jq -y
+    easy_install shodan (This API functionality is not yet integrated!)
 
 **This project is still in beta stage. Ideas and adaptations are therefore very welcome.**
 
