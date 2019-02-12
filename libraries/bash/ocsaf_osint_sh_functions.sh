@@ -555,7 +555,7 @@ harvester_osint() {
 	local i
 	local mail_addr
 
-	mail_addr=($(theharvester -d $domain -l 200 -b all \
+	mail_addr=($(theharvester -d $domain -l 200 -b google \
 		| grep @ \
 		| grep $domain))
 	
