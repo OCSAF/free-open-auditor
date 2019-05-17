@@ -1,3 +1,4 @@
 Server:;;Webserver Version:;;gelb;;
 X-Powered-By:;;Discovery:;;gelb;;
-X-AspNet-Version:;;Discovery:;;gelb;; 
+X-AspNet-Version:;;Discovery:;;gelb;;
+X-Generator:;;Discovery:;;gelb;;

@@ -28,13 +28,19 @@ httpheader_discovery() {
 #server_version_nr=Output Variable
 local h_value
 local h_value_version
+local userAgent
+
+userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:62.0) Gecko/20100101 Firefox/62.0"
+#urlHeader=$(curl --silent --location --insecure --head --user-agent "$userAgent" $checkDomain --http1.1)
 
 if [[ $domain == *.*.* ]]; then
 	#dig $domain +short
-	curl -L -I -s -o ./inputs/temp/http_header_$domain-$time.txt $domain --http1.1
+	./libraries/python/httpheader.py -u http://$domain > ./inputs/temp/http_header_$domain-$time.txt
+	#curl --user-agent "${userAgent}" -L -I -s -o ./inputs/temp/http_header_$domain-$time.txt $domain --http1.1
 else
 	#dig www.$domain +short
-	curl -L -I -s -o ./inputs/temp/http_header_$domain-$time.txt www.$domain --http1.1
+	./libraries/python/httpheader.py -u http://www.$domain > ./inputs/temp/http_header_$domain-$time.txt
+	#curl --user-agent "${userAgent}" -L -I -s -o ./inputs/temp/http_header_$domain-$time.txt www.$domain --http1.1
 fi
 
 echo "##############################"
@@ -77,11 +83,11 @@ do
 
 	#if [ "$h_version_nr" != "" ]; then
 	if [ "$h_value" == "$h_value2" ] && [ "$h_version_nr" != "" ]; then
-	echo -e "\033[33m$h_value\033[0m"
+	echo -e "${yON}$h_value${cOFF}"
 		version_nr+=("$h_version_nr")
 	elif [ "$h_value" != "$h_value2" ] && [ "$h_version_nr" != "" ]; then
-		echo -e "\033[33m$h_value\033[0m"
-		echo -e "\033[33m$h_value2\033[0m"
+		echo -e "${yON}$h_value${cOFF}"
+		echo -e "${yON}$h_value2${cOFF}"
 		version_nr+=("${h_version_nr[*]}")
 		version_nr+=("${h_version_nr2[*]}")
 	fi
@@ -93,10 +99,67 @@ echo "##############################"
 echo "HTTP-Header:"
 echo ""
 cat ./inputs/temp/http_header_$domain-$time.txt
-echo ""
 
 }
 
+############# Security Headers #############
+
+funcSecurityheaderCheck() {
+
+echo "#############################"
+echo "Security-Headers:"
+echo ""
+
+while read line
+do
+	local shFileValue1
+	local shFileColor
+	local urlHeader
+	local sHeaderCheck
+
+	shFileValue1=$(echo "$line" | awk -F ';;' '{print $1}')
+	shFileColor=$(echo "$line" | awk -F ';;' '{print $2}')	
+	urlHeader=$(cat ./inputs/temp/http_header_$domain-$time.txt)
+	#echo $shFileColor
+	
+	# Check if security header is set
+	sHeaderCheck=$(echo "${urlHeader}" | grep "$shFileValue1")
+	if [ -z "$sHeaderCheck" ]; then
+    		echo -e "${shFileColor}${shFileValue1} not set!${cOFF}"
+	else
+    		echo -e "${gON}${sHeaderCheck}${cOFF}"
+	fi
+
+done <./inputs/project/http/securityheader.txt
+
+echo ""
+}
+
+############# Cookie Check #############
+
+funcCookieCheck() {
+
+local userAgent
+local urlHeader
+local hsts
+local csp
+local xframe
+local xss
+local xcontent
+local referrer
+local feature
+local xpowered
+local expectct
+
+echo "#############################"
+echo "Cookie Check:"
+echo ""
+
+local urlHeader
+local cookie
+
+
+}
 
 ########### SECURITY-HEADER-EXPLOIT-DB-CHECK ##########
 httpheader_vuln_check(){
@@ -166,10 +229,10 @@ fi
     			printf "%-60s" " ${reverse_ip}.${bl}."
     			list="$(dig +short -t a ${reverse_ip}.${bl}.)"
     			if  [ "$list" == "" ]; then
-				echo -e "\033[32m${list:-OK}\033[0m"
+				echo -e "${gON}${list:-OK}${cOFF}"
 			else
 				bl_listed+=("${ip_listed[$i]}:$bl")
-				echo -e "\033[31mlisted: ${list:----}\033[0m"
+				echo -e "${rON}listed: ${list:----}${cOFF}"
 			fi
 		done
 		echo ""
@@ -185,7 +248,7 @@ fi
 
 	if [ "${mail_checked[*]}" == "" ]; then
 	
-		echo -e "\033[32mKeine E-Mailadressen zum prüfen vorhanden.\033[0m"
+		echo -e "${gON}Keine E-Mailadressen zum prüfen vorhanden.${cOFF}"
 	else
 		for ((i=0;i<${#mail_checked[*]};i++))
 		do 
@@ -200,21 +263,21 @@ fi
 			jq .Title semipaste.json > pasteacc.txt
 		
 			if [[ -s breach.txt ]]; then	
-				echo -e "\033[31mPWNED! at:\033[0m"
+				echo -e "${rON}PWNED! at:${cOFF}"
 				breach="$(sed 's/\"//g' breach.txt)"
 				mail_pwned=($(echo ${mail_checked[$i]}))
 				echo $breach
 			fi
 		
 			if [[ -s pasteacc.txt ]]; then	
-				echo -e "\033[31mPaste in!!:\033[0m"
+				echo -e "${rON}Paste in!!:${cOFF}"
 				pasteacc="$(sed 's/\"//g' pasteacc.txt)"
 				mail_pwned=($(echo ${mail_checked[$i]}))
 				echo $pasteacc
 			fi
 
 			if ! [ -s breach.txt ] && ! [ -s pasteacc.txt ]; then	
-				echo -e "\033[32mOK\033[0m"
+				echo -e "${gON}OK${cOFF}"
 			fi
 			rm breach.json
 			rm semibreach.json

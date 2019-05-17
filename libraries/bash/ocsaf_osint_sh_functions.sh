@@ -51,18 +51,18 @@ mail_lookup() {
 
 	if [ "${mailserver_ipv4[0]}" == "" ]
 		then
-		echo -e "\033[31mNO MAIL SERVER FOUND!:\033[0m"
+		echo -e "${rON}NO MAIL SERVER FOUND!:${cOFF}"
 	elif [ "${mailserver_ipv4[1]}" == "" ]
 		then
-		echo -e "\033[31mNO REDUNDANT MAIL SERVER FOUND!:\033[0m"
+		echo -e "${yON}NO REDUNDANT MAIL SERVER FOUND!:${cOFF}"
 	elif [ "${mailserver_ipv4[0]}" != "${mailserver_ipv4[1]}" ]
 		then
-		echo -e "\033[32mREDUNDANT MAIL SERVER FOUND:\033[0m"
+		echo -e "${gON}REDUNDANT MAIL SERVER FOUND:${cOFF}"
 	elif [ "${mailserver_ipv4[0]}" != "${mailserver_ipv4[2]}" ]
 		then
-		echo -e "\033[32mREDUNDANT MAIL SERVER FOUND:\033[0m"
+		echo -e "${gON}REDUNDANT MAIL SERVER FOUND:${cOFF}"
 	else
-		echo -e "\033[31mNO REDUNDANT MAIL SERVER FOUND!:\033[0m"
+		echo -e "${yON}NO REDUNDANT MAIL SERVER FOUND!:${cOFF}"
 	fi	
 	
 	#echo ${mail[*]}
@@ -83,9 +83,9 @@ mail_lookup() {
 			geotld=($(geoiplookup ${mailserver_ipv4[$i]} | grep "GeoIP Country Edition:" | cut -d "," -f1 | cut -d " " -f4))
 			geoCheck="$(echo ${geotld[*]} | sed -e "s/$tld//g" | sed 's/^[ \t]*//')"
 			if [ "${geoCheck[*]}" == "" ]; then
-				echo -e "Server location: \033[32m${geotld[*]}-Server in the same country as the domain extension.\033[0m [$tld]"
+				echo -e "Server location: ${gON}${geotld[*]}-Server in the same country as the domain extension.${cOFF} [$tld]"
 			else
-				echo -e "Server location: \033[33m${geotld[*]}-Server may not be in the same country as the domain extension.\033[0m [$tld]"
+				echo -e "Server location: ${yON}${geotld[*]}-Server may not be in the same country as the domain extension.${cOFF} [$tld]"
 			fi
 			
 			ip_listed+=("${mailserver_ipv4[$i]}")
@@ -98,10 +98,10 @@ mail_lookup() {
     				printf "%-60s" " ${reverse_ip}.${bl}."
     				list="$(dig +short -t a ${reverse_ip}.${bl}.)"
     				if  [ "$list" == "" ]; then
-					echo -e "\033[32m${list:-OK}\033[0m"
+					echo -e "${gON}${list:-OK}${cOFF}"
 				else
 					bl_listed+=("${ip_listed[$i]}:$bl")
-					echo -e "\033[31mlisted: ${list:----}\033[0m"
+					echo -e "${rON}listed: ${list:----}${cOFF}"
 				fi
 			done
 			echo ""
@@ -114,9 +114,9 @@ mail_lookup() {
 			geotld=($(geoiplookup ${mailserver_ipv4[$i]} | grep "GeoIP Country Edition:" | cut -d "," -f1 | cut -d " " -f4))
 			geoCheck="$(echo ${geotld[*]} | sed -e "s/$tld//g" | sed 's/^[ \t]*//')"
 			if [ "${geoCheck[*]}" == "" ]; then
-				echo -e "Server location: \033[32m${geotld[*]}-Server in the same country as the domain extension.\033[0m [$tld]"
+				echo -e "Server location: ${gON}${geotld[*]}-Server in the same country as the domain extension.${cOFF} [$tld]"
 			else
-				echo -e "Server location: \033[33m${geotld[*]}-Server may not be in the same country as the domain extension.\033[0m [$tld]"
+				echo -e "Server location: ${yON}${geotld[*]}-Server may not be in the same country as the domain extension.${cOFF} [$tld]"
 			fi
 			
 			ip_listed+=("${mailserver_ipv4[$i]}")
@@ -129,10 +129,10 @@ mail_lookup() {
     				printf "%-60s" " ${reverse_ip}.${bl}."
     				list="$(dig +short -t a ${reverse_ip}.${bl}.)"
     				if  [ "$list" == "" ]; then
-					echo -e "\033[32m${list:-OK}\033[0m"
+					echo -e "${gON}${list:-OK}${cOFF}"
 				else
 					bl_listed+=("${ip_listed[$i]}:$bl")
-					echo -e "\033[31mlisted: ${list:----}\033[0m"
+					echo -e "${rON}listed: ${list:----}${cOFF}"
 				fi
 			done
 			echo ""
@@ -185,9 +185,9 @@ webserver_lookup() {
 				geotld=($(geoiplookup ${arecord2[$i]} | grep "GeoIP Country Edition:" | cut -d "," -f1 | cut -d " " -f4))
 				geoCheck="$(echo ${geotld[*]} | sed -e "s/$tld//g" | sed 's/^[ \t]*//')"
 				if [ "${geoCheck[*]}" == "" ]; then
-					echo -e "Server location: \033[32m${geotld[*]}-Server in the same country as the domain extension.\033[0m [$tld]"
+					echo -e "Server location: ${gON}${geotld[*]}-Server in the same country as the domain extension.${cOFF} [$tld]"
 				else
-					echo -e "Server location: \033[33m${geotld[*]}-Server may not be in the same country as the domain extension.\033[0m [$tld]"
+					echo -e "Server location: ${yON}${geotld[*]}-Server may not be in the same country as the domain extension.${cOFF} [$tld]"
 				fi
 
 				echo "Reverse-Lookup: " $reverse2
@@ -199,10 +199,10 @@ webserver_lookup() {
     					printf "%-60s" " ${reverse_ip}.${bl}."
     					local list="$(dig +short -t a ${reverse_ip}.${bl}.)"
     					if  [ "$list" == "" ]; then
-						echo -e "\033[32m${list:-OK}\033[0m"
+						echo -e "${gON}${list:-OK}${cOFF}"
 					else
 						bl_listed+=("${arecord[$i]}:$bl")
-						echo -e "\033[31mlisted: ${list:----}\033[0m"
+						echo -e "${rON}listed: ${list:----}${cOFF}"
 					fi
 				done
 		else
@@ -216,9 +216,9 @@ webserver_lookup() {
 				geotld=($(geoiplookup ${arecord[$i]} | grep "GeoIP Country Edition:" | cut -d "," -f1 | cut -d " " -f4))
 				geoCheck="$(echo ${geotld[*]} | sed -e "s/$tld//g" | sed 's/^[ \t]*//')"
 				if [ "${geoCheck[*]}" == "" ]; then
-					echo -e "Server location: \033[32m${geotld[*]}-Server in the same country as the domain extension.\033[0m [$tld]"
+					echo -e "Server location: ${gON}${geotld[*]}-Server in the same country as the domain extension.${cOFF} [$tld]"
 				else
-					echo -e "Server location: \033[33m${geotld[*]}-Server may not be in the same country as the domain extension.\033[0m [$tld]"
+					echo -e "Server location: ${yON}${geotld[*]}-Server may not be in the same country as the domain extension.${cOFF} [$tld]"
 				fi
 	
 				echo "Reverse-Lookup: " $reverse3
@@ -230,10 +230,10 @@ webserver_lookup() {
     					printf "%-60s" " ${reverse_ip}.${bl}."
     					local list="$(dig +short -t a ${reverse_ip}.${bl}.)"
     					if  [ "$list" == "" ]; then
-						echo -e "\033[32m${list:-OK}\033[0m"
+						echo -e "${gON}${list:-OK}${cOFF}"
 					else
 						bl_listed+=("${arecord[$i]}:$bl")
-						echo -e "\033[31mlisted: ${list:----}\033[0m"
+						echo -e "${rON}listed: ${list:----}${cOFF}"
 					fi
 				done
 			fi
@@ -269,9 +269,9 @@ if [[ $domain == *.*.* ]]; then
 		web_check=$(dig $domain @$dns_file_value1 +recurse +short)
 		printf "%-60s" " $dns_file_value2 ($dns_file_value1)"
 		if [ "$web_check" != "" ]; then
-			echo -e "\033[32mOK\033[0m"
+			echo -e "${gON}OK${cOFF}"
 		else
-			echo -e "\033[31mlisted\033[0m"
+			echo -e "${rON}listed${cOFF}"
 		fi
 	done <./inputs/project/bl/malware_dnslists.txt
 	echo ""
@@ -291,9 +291,9 @@ else
 		web_check=$(dig www.$domain @$dns_file_value1 +recurse +short)
 		printf "%-60s" " $dns_file_value2 ($dns_file_value1)"
 		if [ "$web_check" != "" ]; then
-			echo -e "\033[32mOK\033[0m"
+			echo -e "${gON}OK${cOFF}"
 		else
-			echo -e "\033[31mlisted\033[0m"
+			echo -e "${rON}listed${cOFF}"
 		fi
 	done <./inputs/project/bl/malware_dnslists.txt
 	echo ""
@@ -421,11 +421,11 @@ spf_check() {
 				"$spf_file_value1")
 					echo ""
 					if [ "$spf_file_value2" == "green" ]; then
-						echo -e "\033[32m$spf_file_value3\033[0m"
+						echo -e "${gON}$spf_file_value3${cOFF}"
 					elif [ "$spf_file_value2" == "yellow" ]; then
-						echo -e "\033[33m$spf_file_value3\033[0m"
+						echo -e "${yON}$spf_file_value3${cOFF}"
 					elif [ "$spf_file_value2" == "red" ]; then
-						echo -e "\033[31m$spf_file_value3\033[0m"
+						echo -e "${rON}$spf_file_value3${cOFF}"
 					elif [ "$spf_file_value2" == "" ]; then
 						echo $spf_file_value3
 					fi
@@ -449,11 +449,11 @@ spf_check() {
 								echo $spf_redirect_check
 								echo ""
 								if [ "$spf_file_value2" == "green" ]; then
-									echo -e "\033[32m$spf_file_value3\033[0m"
+									echo -e "${gON}$spf_file_value3${cOFF}"
 								elif [ "$spf_file_value2" == "yellow" ]; then
-									echo -e "\033[33m$spf_file_value3\033[0m"
+									echo -e "${yON}$spf_file_value3${cOFF}"
 								elif [ "$spf_file_value2" == "red" ]; then
-									echo -e "\033[31m$spf_file_value3\033[0m"
+									echo -e "${rON}$spf_file_value3${cOFF}"
 								elif [ "$spf_file_value2" == "" ]; then
 									echo $spf_file_value3
 								fi
@@ -467,20 +467,71 @@ spf_check() {
 						esac
 					else
 						echo "SPF redirected to:"
-						echo -e "\033[31m*No SPF entry: There is a risk of phishing emails. Add SPF entry!*\033[0m"
+						echo -e "${rON}*No SPF entry: There is a risk of phishing emails. Add SPF entry!*${cOFF}"
 					fi
 					;;
 			esac
 		done <./inputs/project/spf/spf.txt
 
 	else	
-		echo -e "\033[31m*No SPF entry: There is a risk of phishing emails. Add SPF entry!*\033[0m"
+		echo -e "${rON}*No SPF entry: There is a risk of phishing emails. Add SPF entry!*${cOFF}"
 	fi
 
 	echo "Details: https://de.wikipedia.org/wiki/Sender_Policy_Framework"
 }
 
 ######################################
+
+################ DMARC KI Version #################
+funcDMARCcheck() {
+	local dmarc
+	
+	dmarc=$(dig +noall +answer -t txt _dmarc.$domain)
+	if [ -z "${dmarc}" ]; then
+    		echo -e "${yON}DMARC not set!${cOFF}"
+	else
+    		echo -e "${gON}DMARC is set:${cOFF}" 
+		echo ${dmarc}
+	fi
+	
+	echo ""
+	echo "Details: https://en.wikipedia.org/wiki/DMARC"
+	echo ""
+}
+
+################ DNSSEC KI Version #################
+funcDNSSECcheck() {
+	local dnssec
+	
+	dnssec=$(dig +noall +answer +dnssec $domain | grep -i "RRSIG")
+	if [ -z "${dnssec}" ]; then
+    		echo -e "${yON}DNSSEC not set!${cOFF}"
+	else
+    		echo -e "${gON}DNSSEC is set:${cOFF}" 
+		echo ${dnssec}
+	fi
+	
+	echo ""
+	echo "Details: https://en.wikipedia.org/wiki/Domain_Name_System_Security_Extensions"
+	echo ""
+}
+
+################ CAA KI Version #################
+funcCAAcheck() {
+	local caa
+	
+	caa=$(dig +noall +answer -t caa $domain)
+	if [ -z "${caa}" ]; then
+    		echo -e "${yON}CAA not set!${cOFF}"
+	else
+    		echo -e "${gON}CAA is set:${cOFF}" 
+		echo ${caa}
+	fi
+	
+	echo ""
+	echo "Details: https://en.wikipedia.org/wiki/DNS_Certification_Authority_Authorization"
+	echo ""
+}
 
 ############ BLACKLIST-CHECK ############
 #Thanks to Agarzon, Quick Blacklist Check inspired by https://gist.github.com/agarzon/5554490
@@ -506,10 +557,10 @@ mailserver_blcheck() {
     			printf "%-60s" " ${reverse_ip}.${bl}."
     			list="$(dig +short -t a ${reverse_ip}.${bl}.)"
     			if  [ "$list" == "" ]; then
-				echo -e "\033[32m${list:-OK}\033[0m"
+				echo -e "${gON}${list:-OK}${cOFF}"
 			else
 				bl_listed+=("${ip_listed[$i]}:$bl")
-				echo -e "\033[31mlisted: ${list:----}\033[0m"
+				echo -e "${rON}listed: ${list:----}${cOFF}"
 			fi
 		done
 		echo ""
@@ -535,10 +586,10 @@ host_blcheck() {
     				printf "%-60s" " ${reverse_ip}.${bl}."
     				local list="$(dig +short -t a ${reverse_ip}.${bl}.)"
     				if  [ "$list" == "" ]; then
-					echo -e "\033[32m${list:-OK}\033[0m"
+					echo -e "${gON}${list:-OK}${cOFF}"
 				else
 					bl_listed+=("${arecord[$i]}:$bl")
-					echo -e "\033[31mlisted: ${list:----}\033[0m"
+					echo -e "${rON}listed: ${list:----}${cOFF}"
 				fi
 		done
 	fi
@@ -572,9 +623,9 @@ harvester_osint() {
 	
 	if [ "${mail_checked[*]}" != "" ]; then
 		if [ "${mail_checked[1]}" == "" ]; then
-			echo -e "\033[33m$mail_num Email address found!\033[0m"
+			echo -e "${yON}$mail_num Email address found!${cOFF}"
 		else
-			echo -e "\033[33m$mail_num Email address found!\033[0m"
+			echo -e "${yON}$mail_num Email address found!${cOFF}"
 		fi
 
 		for ((i=0;i<${#mail_checked[*]};i++))
@@ -583,7 +634,7 @@ harvester_osint() {
 		done	
 		
 	else
-		echo -e "\033[32mNo email address found.\033[0m"
+		echo -e "${gON}No email address found.${cOFF}"
 	fi
 	
 	echo "----------------------"
@@ -601,7 +652,7 @@ pwned_check() {
 
 	if [ "${mail_checked[*]}" == "" ]; then
 	
-		echo -e "\033[32mNo email address available to check.\033[0m"
+		echo -e "${gON}No email address available to check.${cOFF}"
 	else
 		for ((i=0;i<${#mail_checked[*]};i++))
 		do 
@@ -616,21 +667,21 @@ pwned_check() {
 			jq .Title semipaste.json > pasteacc.txt
 		
 			if [[ -s breach.txt ]]; then	
-				echo -e "\033[31mPWNED! at:\033[0m"
+				echo -e "${rON}PWNED! at:${cOFF}"
 				breach="$(sed 's/\"//g' breach.txt)"
 				mail_pwned=($(echo ${mail_checked[$i]}))
 				echo $breach
 			fi
 		
 			if [[ -s pasteacc.txt ]]; then	
-				echo -e "\033[31mPaste in!!:\033[0m"
+				echo -e "${rON}Paste in!!:${cOFF}"
 				pasteacc="$(sed 's/\"//g' pasteacc.txt)"
 				mail_pwned=($(echo ${mail_checked[$i]}))
 				echo $pasteacc
 			fi
 
 			if ! [ -s breach.txt ] && ! [ -s pasteacc.txt ]; then	
-				echo -e "\033[32mOK\033[0m"
+				echo -e "${gON}OK${cOFF}"
 			fi
 			rm breach.json
 			rm semibreach.json
@@ -678,18 +729,18 @@ mail_redundanz() {
 
 if [ "${mailCheckIPv4[0]}" == "" ]
 	then
-	echo -e "\033[31m*NO MAIL SERVER FOUND!*\033[0m"
+	echo -e "${rON}*NO MAIL SERVER FOUND!*${cOFF}"
 elif [ "${mailCheckIPv4[1]}" == "" ]
 	then
-	echo -e "\033[31m*NO REDUNDANT MAIL SERVER FOUND!*\033[0m"
+	echo -e "${yON}*NO REDUNDANT MAIL SERVER FOUND!*${cOFF}"
 elif [ "${mailCheckIPv4[0]}" != "${mailCheckIPv4[1]}" ]
 	then
-	echo -e "\033[32m*REDUNDANT MAIL SERVER FOUND.*\033[0m"
+	echo -e "${gON}*REDUNDANT MAIL SERVER FOUND.*${cOFF}"
 elif [ "${mailCheckIPv4[0]}" != "${mailCheckIPv4[2]}" ]
 	then
-	echo -e "\033[32m*REDUNDANT MAIL SERVER FOUND*\033[0m"
+	echo -e "${gON}*REDUNDANT MAIL SERVER FOUND*${cOFF}"
 else
-	echo -e "\033[31m*NO REDUNDANT MAIL SERVER FOUND!*\033[0m"
+	echo -e "${yON}*NO REDUNDANT MAIL SERVER FOUND!*${cOFF}"
 fi
 
 #Auf Online Mail-Dienste prüfen
@@ -725,22 +776,22 @@ mail_loadbalance() {
 
 if [ "${check1[*]}" != "${check2[*]}" ]
 	then
-	echo -e "\033[32m*Mail server host-name load-balancing found! (3 DNS-Queries)*\033[0m"
-	echo -e "\033[32mDNS-Query 1:\033[0m" ${check1[*]}
-	echo -e "\033[32mDNS-Query 2:\033[0m" ${check2[*]}
+	echo -e "${gON}*Mail server host-name load-balancing found! (3 DNS-Queries)*${cOFF}"
+	echo -e "${gON}DNS-Query 1:${cOFF}" ${check1[*]}
+	echo -e "${gON}DNS-Query 2:${cOFF}" ${check2[*]}
 	echo "DNS-Query 3:" ${check3[*]}
 elif [ "${check1[*]}" != "${check3[*]}" ]
 	then
-	echo -e "\033[32m*Mail server host-name load-balancing found! (3 DNS-Queries)*\033[0m"
-	echo -e "\033[32mDNS-Query 1:\033[0m" ${check1[*]}
+	echo -e "${gON}*Mail server host-name load-balancing found! (3 DNS-Queries)*${cOFF}"
+	echo -e "${gON}DNS-Query 1:${cOFF}" ${check1[*]}
 	echo "DNS-Query 2:" ${check2[*]}
-	echo -e "\033[32mDNS-Query 3:\033[0m" ${check3[*]}
+	echo -e "${gON}DNS-Query 3:${cOFF}" ${check3[*]}
 elif [ "${check2[*]}" != "${check3[*]}" ]
 	then
-	echo -e "\033[32m*Mail server host-name load-balancing found!(3 DNS-Queries)*\033[0m"
+	echo -e "${gON}*Mail server host-name load-balancing found!(3 DNS-Queries)*${cOFF}"
 	echo "DNS-Query 1:" ${check1[*]}
-	echo -e "\033[32mDNS-Query 2:\033[0m" ${check2[*]}
-	echo -e "\033[32mDNS-Query 3:\033[0m" ${check3[*]}
+	echo -e "${gON}DNS-Query 2:${cOFF}" ${check2[*]}
+	echo -e "${gON}DNS-Query 3:${cOFF}" ${check3[*]}
 else
 	echo "*No mail server load-balancing found. (3 DNS-Queries)*"
 	echo "Repeat the script for higher reliability!"
@@ -760,9 +811,9 @@ server_location() {
 	geoCheck="$(echo ${geotld[*]} | sed -e "s/$tld//g" | sed 's/^[ \t]*//')"
 
 	if [ "${geoCheck[*]}" == "" ]; then
-		echo -e "\033[32m*Mail server location in the same country as the domain extension.*\033[0m [$tld]"
+		echo -e "${gON}*Mail server location in the same country as the domain extension.*${cOFF} [$tld]"
 	else
-		echo -e "\033[33m*Mail server location may not be in the same country as the domain extension.*\033[0m [$tld]"
+		echo -e "${yON}*Mail server location may not be in the same country as the domain extension.*${cOFF} [$tld]"
 	fi
 
 	echo "Check the locations of the mail servers here (MX GEO-IP country code):" "["${geotld[*]}"]"
@@ -770,11 +821,11 @@ server_location() {
 ############################################################
 
 blacklist_check() {
-echo -e "\033[4mIP-Blacklist Check - SPAM/Malware:\033[0m"
+echo "IP-Blacklist Check - SPAM/Malware:"
 if  [ "$bl_listed" == "" ];then
-echo -e "\033[32m*Not listed on any blacklist.*\033[0m"
+echo -e "${gON}*Not listed on any blacklist.*${cOFF}"
 else
-echo -e "\033[31m*Blacklisted!*\033[0m"
+echo -e "${rON}*Blacklisted!*${cOFF}"
 echo "Listed here (Host:Blacklist):"
 for ((i=0;i<${#blListed[*]};i++))
 	do 
@@ -783,14 +834,14 @@ for ((i=0;i<${#blListed[*]};i++))
 fi
 echo ""
 if [ "$mailOsint" == "y" ];then
-	echo -e "\033[4mE-MAIL OSINT:\033[0m"
+	echo "E-MAIL OSINT:"
 	if [ "${mail_checked[*]}" != "" ]; then
 		if [ "${mail_checked[1]}" == "" ]; then
-			echo -e "\033[33m$mail_num Email address found. Check details above.\033[0m"
+			echo -e "${yON}$mail_num Email address found. Check details above.${cOFF}"
 			echo ${mail_pwned[*]}
 		fi
 	else
-		echo -e "\033[32mNo email address found.\033[0m"
+		echo -e "${gON}No email address found.${cOFF}"
 	fi
 echo ""
 fi

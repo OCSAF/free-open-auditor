@@ -1,0 +1,8 @@
+Strict-Transport-Security;;\\e[31m;;
+X-Frame-Options;;\\e[31m;;
+X-Content-Type-Options;;\\e[31m;;
+X-XSS-Protection;;\\e[31m;;
+Content-Security-Policy;;\\e[33m;;
+Referrer-Policy;;\\e[33m;;
+Feature-Policy;;\\e[33m;;
+Expect-CT;;\\e[33m;;

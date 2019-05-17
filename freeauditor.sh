@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################
-################### FREE OCSAF AUDITOR MAIN - 0.6.1 (BETA) ####################
+################### FREE OCSAF AUDITOR MAIN - 0.6.2 (BETA) ####################
 ###############################################################################
 
 #########################################################################################################################
@@ -18,13 +18,26 @@
 #########################################################################################################################
 
 
-#Integrated functions
-. libraries/bash/ocsaf_osint_sh_functions.sh
-. libraries/bash/ocsaf_scan_sh_functions.sh
+#######################
+### Preparing tasks ###
+#######################
 
-#Preparing tasks
 time=$(date +%d.%m.%Y-%H:%M)
-echo nameserver 9.9.9.9 > /etc/resolv.conf  #Comment out if not necessary.
+echo nameserver 9.9.9.9 > /etc/resolv.conf  #Comment out if not necessary. With Security look https://www.quad9.net.
+#echo nameserver 9.9.9.10 > /etc/resolv.conf  #Comment out if not necessary. No Security look https://www.quad9.net.
+#Check if vulnreport folder exists and create otherwise
+
+if ! [ -d "./inputs/temp" ]; then
+	mkdir ./inputs/temp
+fi
+
+
+############################
+### Integrated functions ###
+############################
+
+. libraries/bash/ocsaf_osint_sh_functions.sh        #All OSINT functions
+. libraries/bash/ocsaf_scan_sh_functions.sh         #All SCAN function
 
 
 #####################################
@@ -48,6 +61,7 @@ usage() {
 	echo "  -h, help - this beautiful text"
 	echo "  -d <DOMAIN>"
 	echo "  -a, aggressiv, any modules (unsafe)"
+	echo "  -c, colors off for better readability in files"
 	echo "  -o, any osint modules"
 	echo "  -w, webserver analysis"
 	echo "  -i, httpheader analysis"
@@ -70,15 +84,15 @@ usage() {
 	echo "#See also the MAN PAGE - https://freecybersecurity.org"
 }
 
-
 ###############################
 ### GETOPTS - TOOL OPTIONS  ###
 ###############################
 
-while getopts ":d:ahowimstpiz" opt; do
+while getopts ":d:achowimstpiz" opt; do
 	case ${opt} in
 		h) usage; exit 1;;
 		a) any_modules=1; opt_check=1;;
+		c) colors=1;;
 		d) domain="$OPTARG"; opt_domain=1;
 			if [[ "$domain" = -* ]]; then
 				echo "**No domain argument set**"
@@ -129,6 +143,13 @@ if [ "$opt_check" == "" ]; then
 fi
 
 
+##############
+### COLORS ###
+##############
+
+. libraries/bash/colors.sh                          #All COLOR codes
+
+
 ####################
 ### MAIN PROGRAM ###
 ####################
@@ -138,7 +159,7 @@ echo ""
 echo "####################################################################"
 echo "########## Free OCSAF Security Auditor - GNU GPLv3        ##########"
 echo "########## https://freecybersecurity.org                  ##########"
-echo "########## MG(), Version 0.6.1 - Beta (26.06.18)          ##########"
+echo "########## MG(), Version 0.6.2 - Beta (06.05.19)          ##########"
 echo "####################################################################"
 echo ""
 echo $time
@@ -183,6 +204,16 @@ if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$mailserver_osint"
 	echo ""
 fi
 
+#DMARC Check Funktion - OSINT-Modul
+if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$mailserver_osint" == "1" ]; then
+	echo "#######################"
+	echo "####  DMARC-CHECK  ####"
+	echo "#######################"
+	echo ""
+	funcDMARCcheck
+	echo ""
+fi
+
 #Webserver Lookup - OSINT-Modul
 if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$webserver_osint" == "1" ]; then
 	echo "###################################"
@@ -199,6 +230,24 @@ if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$webserver_osint" 
 	echo "####################################"
 	echo ""
 	malware_check
+fi
+
+#Webserver CAA Check - OSINT-Modul
+if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$webserver_osint" == "1" ]; then
+	echo "#######################################"
+	echo "####  WEB-SERVER-CAA-RECORD-CHECK  ####"
+	echo "#######################################"
+	echo ""
+	funcCAAcheck
+fi
+
+#Webserver DNSSEC Check - OSINT-Modul
+if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$webserver_osint" == "1" ]; then
+	echo "##########################################"
+	echo "####  WEB-SERVER-DNSSEC-RECORD-CHECK  ####"
+	echo "##########################################"
+	echo ""
+	funcDNSSECcheck
 fi
 
 #TheHarvester - OSINT-Modul
@@ -235,6 +284,7 @@ if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$httpheader_osint"
 	echo "#############################"
 	echo ""
 	httpheader_discovery
+	funcSecurityheaderCheck
 	httpheader_cvedetails_check
 	httpheader_vuln_check
 fi
