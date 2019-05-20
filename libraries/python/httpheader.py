@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 #######################################################################
 ################### FREE OCSAF HTTP Header FUNCTION ###################
 #######################################################################
@@ -23,20 +24,19 @@ import argparse
 ############# HTTP Header ##############
 
 def funcHTTPHeader(url):
-
+    
     agent = { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:62.0) Gecko/20100101 Firefox/62.0' }
+    #agent = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0'}
 
-    #url = input("URL eingeben / z.B. http://www.test.ch: ")
     req = urllib.request.Request(
             url,
             data=None,
             headers=agent
             )
-    http = urllib.request.urlopen(req)
+    try:http = urllib.request.urlopen(req)
+    except urllib.error.URLError as err:
+        print("ERROR: {} {}".format(err.code,err.reason))
 
-   # print()
-   # print("HTTP-Header for {}:".format(args["url"]))
-   # print()
     print(http.headers)
 
 if __name__ == "__main__":
@@ -44,6 +44,7 @@ if __name__ == "__main__":
     parser.add_argument("-u", "--url", required=True,
             help="Full URL - http://www.freecybersecurity.org")
     args = vars(parser.parse_args())
-    funcHTTPHeader(args["url"])
+    url = args["url"]
+    funcHTTPHeader(url)
 
 ############# END #############

@@ -125,7 +125,11 @@ do
 	# Check if security header is set
 	sHeaderCheck=$(echo "${urlHeader}" | grep "$shFileValue1")
 	if [ -z "$sHeaderCheck" ]; then
-    		echo -e "${shFileColor}${shFileValue1} not set!${cOFF}"
+		if [ "$shFileColor" == "red" ]; then
+    			echo -e "${rON}${shFileValue1} not set!${cOFF}"
+		elif [ "$shFileColor" == "yellow" ]; then
+    			echo -e "${yON}${shFileValue1} not set!${cOFF}"
+		fi
 	else
     		echo -e "${gON}${sHeaderCheck}${cOFF}"
 	fi

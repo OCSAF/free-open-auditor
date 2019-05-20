@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################
-################### FREE OCSAF AUDITOR MAIN - 0.6.2 (BETA) ####################
+################### FREE OCSAF AUDITOR MAIN - 0.6.3 (BETA) ####################
 ###############################################################################
 
 #########################################################################################################################
@@ -25,11 +25,21 @@
 time=$(date +%d.%m.%Y-%H:%M)
 echo nameserver 9.9.9.9 > /etc/resolv.conf  #Comment out if not necessary. With Security look https://www.quad9.net.
 #echo nameserver 9.9.9.10 > /etc/resolv.conf  #Comment out if not necessary. No Security look https://www.quad9.net.
-#Check if vulnreport folder exists and create otherwise
 
+#Check if vulnreport folder exists and create otherwise
 if ! [ -d "./inputs/temp" ]; then
 	mkdir ./inputs/temp
 fi
+
+#Check if the required programs are installed
+program=(python3 dig host jq geoiplookup)
+for i in "${program[@]}"; do
+	if [ -z $(command -v ${i}) ]; then
+		echo "${i} is not installed."
+		exit
+	fi
+done
+unset program
 
 
 ############################
@@ -46,7 +56,7 @@ fi
 
 #script usage
 usage() {
-	echo "Free OCSAF Security Auditor BETA 0.6.1 - GPLv3 (https://freecybersecurity.org)"
+	echo "Free OCSAF Security Auditor BETA 0.6.3 - GPLv3 (https://freecybersecurity.org)"
 	echo "Use only with legal authorization and at your own risk!"
        	echo "ANY LIABILITY WILL BE REJECTED!"
        	echo ""	
@@ -159,7 +169,7 @@ echo ""
 echo "####################################################################"
 echo "########## Free OCSAF Security Auditor - GNU GPLv3        ##########"
 echo "########## https://freecybersecurity.org                  ##########"
-echo "########## MG(), Version 0.6.2 - Beta (06.05.19)          ##########"
+echo "########## MG(), Version 0.6.3 - Beta (06.05.19)          ##########"
 echo "####################################################################"
 echo ""
 echo $time
