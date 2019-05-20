@@ -4,5 +4,5 @@ X-Content-Type-Options;;red
 X-XSS-Protection;;red
 Content-Security-Policy;;yellow
 Referrer-Policy;;yellow
-Feature-Policy;;yellow
 Expect-CT;;yellow
+Feature-Policy;;yellow
