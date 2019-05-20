@@ -1,8 +1,8 @@
-Strict-Transport-Security;;red;;
-X-Frame-Options;;red;;
-X-Content-Type-Options;;red;;
-X-XSS-Protection;;red;;
-Content-Security-Policy;;yellow;;
-Referrer-Policy;;yellow;;
-Feature-Policy;;yellow;;
-Expect-CT;;yellow;;
+Strict-Transport-Security;;red
+X-Frame-Options;;red
+X-Content-Type-Options;;red
+X-XSS-Protection;;red
+Content-Security-Policy;;yellow
+Referrer-Policy;;yellow
+Feature-Policy;;yellow
+Expect-CT;;yellow
