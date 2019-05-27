@@ -643,59 +643,45 @@ harvester_osint() {
 ###########################################
 
 ################### PWNED-CHECK ####################
-#Thanks to Navan Chauhan - https://github.com/navanchauhan/Pwned
+#Thanks to Navan Chauhan for the code inspiration. - https://github.com/navanchauhan/Pwned
 pwned_check() {
+	local pwned
+	local pasted
+	local pastedid
 	local i
-	local breach
-	local pasteacc
-	local mail_pwned
-
+	
 	if [ "${mail_checked[*]}" == "" ]; then
 	
 		echo -e "${gON}No email address available to check.${cOFF}"
 	else
-		for ((i=0;i<${#mail_checked[*]};i++))
-		do 
-			echo "Checking if ${mail_checked[$i]} have been Pwned:"
-		
-			curl -s -o breach.json "https://haveibeenpwned.com/api/v2/breachedaccount/${mail_checked[$i]}"
-			curl -s -o pasteacc.json "https://haveibeenpwned.com/api/v2/pasteaccount/${mail_checked[$i]}"
-
-			jq ".[]" breach.json > semibreach.json 
-			jq .Title semibreach.json > breach.txt
-			jq ".[]" pasteacc.json > semipaste.json 
-			jq .Title semipaste.json > pasteacc.txt
-		
-			if [[ -s breach.txt ]]; then	
-				echo -e "${rON}PWNED! at:${cOFF}"
-				breach="$(sed 's/\"//g' breach.txt)"
-				mail_pwned=($(echo ${mail_checked[$i]}))
-				echo $breach
+		for ((i=0;i<${#mail_checked[*]};i++)); do 
+			echo "Check ${mail_checked[$i]}:"
+			pwned=$(wget -q -O- https://haveibeenpwned.com/api/v2/breachedaccount/${mail_checked[$i]} | jq '.[]' | jq '.Title')
+			pasted=$(wget -q -O- https://haveibeenpwned.com/api/v2/pasteaccount/${mail_checked[$i]} | jq '.[]' | jq '.Source')
+			pastedid=$(wget -q -O- https://haveibeenpwned.com/api/v2/pasteaccount/${mail_checked[$i]} | jq '.[]' | jq '.Id')
+	
+			if [ "${pwned}" != "" ]; then	
+				echo -e "${rON}PWNED!:${cOFF} "${pwned}
 			fi
 		
-			if [[ -s pasteacc.txt ]]; then	
-				echo -e "${rON}Paste in!!:${cOFF}"
-				pasteacc="$(sed 's/\"//g' pasteacc.txt)"
-				mail_pwned=($(echo ${mail_checked[$i]}))
-				echo $pasteacc
+			if [ "${pasted}" != "" ]; then
+				echo ""	
+				echo -e "${rON}PASTED!:${cOFF} "${pasted}
+				echo "PasteID: "${pastedid}
 			fi
 
-			if ! [ -s breach.txt ] && ! [ -s pasteacc.txt ]; then	
-				echo -e "${gON}OK${cOFF}"
+			if [ "${pwned}" == "" ] && [ "${pasted}" == "" ]; then	
+				echo -e "${gON}OK${cOFF} - Not listed"
 			fi
-			rm breach.json
-			rm semibreach.json
-			rm breach.txt
-			rm pasteacc.json
-			rm semipaste.json
-			rm pasteacc.txt
-		
-			echo "----------------------"
-			sleep 1.2
+
+			echo "--------------------------------------------"
+			echo ""
+			sleep 1.5
 		done
 	fi
 	echo ""
 }
+
 #########################################
 
 ################### SHODAN.IO-API #####################

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################
-################### FREE OCSAF AUDITOR MAIN - 0.6.3 (BETA) ####################
+################### FREE OCSAF AUDITOR MAIN - 0.6.4 (BETA) ####################
 ###############################################################################
 
 #########################################################################################################################
@@ -32,14 +32,19 @@ if ! [ -d "./inputs/temp" ]; then
 fi
 
 #Check if the required programs are installed
-program=(python3 dig host jq geoiplookup)
+program=(python3 dig host jq geoiplookup theharvester)
 for i in "${program[@]}"; do
 	if [ -z $(command -v ${i}) ]; then
 		echo "${i} is not installed."
+		count=1
+	fi
+	
+	if [[ $count -eq 1 ]]; then
 		exit
 	fi
 done
 unset program
+unset count
 
 
 ############################
@@ -56,7 +61,7 @@ unset program
 
 #script usage
 usage() {
-	echo "Free OCSAF Security Auditor BETA 0.6.3 - GPLv3 (https://freecybersecurity.org)"
+	echo "Free OCSAF Security Auditor BETA 0.6.4 - GPLv3 (https://freecybersecurity.org)"
 	echo "Use only with legal authorization and at your own risk!"
        	echo "ANY LIABILITY WILL BE REJECTED!"
        	echo ""	
@@ -169,7 +174,7 @@ echo ""
 echo "####################################################################"
 echo "########## Free OCSAF Security Auditor - GNU GPLv3        ##########"
 echo "########## https://freecybersecurity.org                  ##########"
-echo "########## MG(), Version 0.6.3 - Beta (06.05.19)          ##########"
+echo "########## MG(), Version 0.6.4 - Beta (27.05.19)          ##########"
 echo "####################################################################"
 echo ""
 echo $time

@@ -123,7 +123,7 @@ do
 	#echo $shFileColor
 	
 	# Check if security header is set
-	sHeaderCheck=$(echo "${urlHeader}" | grep "$shFileValue1")
+	sHeaderCheck=$(echo "${urlHeader}" | grep -i "$shFileValue1")
 	if [ -z "$sHeaderCheck" ]; then
 		if [ "$shFileColor" == "red" ]; then
     			echo -e "${rON}${shFileValue1} not set!${cOFF}"
@@ -242,58 +242,5 @@ fi
 		echo ""
 	done
 }
-###################################
-#Thanks to Navan Chauhan - https://github.com/navanchauhan/Pwned
-2pwned_check() {
-	local i
-	local breach
-	local pasteacc
-	local mail_pwned
 
-	if [ "${mail_checked[*]}" == "" ]; then
-	
-		echo -e "${gON}Keine E-Mailadressen zum prüfen vorhanden.${cOFF}"
-	else
-		for ((i=0;i<${#mail_checked[*]};i++))
-		do 
-			echo "Checking if ${mail_checked[$i]} have been Pwned:"
-		
-			curl -s -o breach.json "https://haveibeenpwned.com/api/v2/breachedaccount/${mail_checked[$i]}"
-			curl -s -o pasteacc.json "https://haveibeenpwned.com/api/v2/pasteaccount/${mail_checked[$i]}"
-
-			jq ".[]" breach.json > semibreach.json 
-			jq .Title semibreach.json > breach.txt
-			jq ".[]" pasteacc.json > semipaste.json 
-			jq .Title semipaste.json > pasteacc.txt
-		
-			if [[ -s breach.txt ]]; then	
-				echo -e "${rON}PWNED! at:${cOFF}"
-				breach="$(sed 's/\"//g' breach.txt)"
-				mail_pwned=($(echo ${mail_checked[$i]}))
-				echo $breach
-			fi
-		
-			if [[ -s pasteacc.txt ]]; then	
-				echo -e "${rON}Paste in!!:${cOFF}"
-				pasteacc="$(sed 's/\"//g' pasteacc.txt)"
-				mail_pwned=($(echo ${mail_checked[$i]}))
-				echo $pasteacc
-			fi
-
-			if ! [ -s breach.txt ] && ! [ -s pasteacc.txt ]; then	
-				echo -e "${gON}OK${cOFF}"
-			fi
-			rm breach.json
-			rm semibreach.json
-			rm breach.txt
-			rm pasteacc.json
-			rm semipaste.json
-			rm pasteacc.txt
-		
-			echo "----------------------"
-			sleep 1.5
-		done
-	fi
-	echo ""
-}
-#########################################
+################## END ####################
