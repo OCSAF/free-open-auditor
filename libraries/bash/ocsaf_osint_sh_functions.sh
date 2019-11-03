@@ -564,7 +564,7 @@ funcCAAcheck() {
 }
 
 
-############### MAIL-HARVESTER ###############
+############### MAIL-DNS-HARVESTER ###############
 #Thanks to TheHarvester - https://github.com/laramies/theHarvester
 func_harvester_osint() {
 	#_mail_checked = global variable
