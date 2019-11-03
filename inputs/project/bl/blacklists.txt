@@ -1,3 +1,5 @@
+b.barracudacentral.org
+9.9.9.9
 bl.spamcop.net
 sbl.spamhaus.org
 xbl.spamhaus.org
@@ -17,5 +19,3 @@ combined.abuse.ch
 dnsbl-1.uceprotect.net
 dnsbl-2.uceprotect.net
 dnsbl-3.uceprotect.net
-b.barracudacentral.org
-9.9.9.9

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################
-################### FREE OCSAF AUDITOR MAIN - 0.6.4 (BETA) ####################
+################### FREE OCSAF AUDITOR MAIN - 0.6.5 (BETA) ####################
 ###############################################################################
 
 #########################################################################################################################
@@ -32,17 +32,17 @@ if ! [ -d "./inputs/temp" ]; then
 fi
 
 #Check if the required programs are installed
-program=(python3 dig host jq geoiplookup theharvester)
+program=(python3 dig host jq geoiplookup theHarvester)
 for i in "${program[@]}"; do
 	if [ -z $(command -v ${i}) ]; then
 		echo "${i} is not installed."
 		count=1
 	fi
-	
+done
 	if [[ $count -eq 1 ]]; then
 		exit
 	fi
-done
+
 unset program
 unset count
 
@@ -59,9 +59,9 @@ unset count
 ### SCRIPT USAGE - OTIONS - HELP  ###
 #####################################
 
-#script usage
-usage() {
-	echo "Free OCSAF Security Auditor BETA 0.6.4 - GPLv3 (https://freecybersecurity.org)"
+#script funcHelp
+funcHelp() {
+	echo "Free OCSAF Security Auditor BETA 0.6.5 - GPLv3 (https://freecybersecurity.org)"
 	echo "Use only with legal authorization and at your own risk!"
        	echo "ANY LIABILITY WILL BE REJECTED!"
        	echo ""	
@@ -82,8 +82,8 @@ usage() {
 	echo "  -i, httpheader analysis"
 	echo "  -m, mailserver analysis"
 	echo "  -s, shodan api (not yet implemented)"
-	echo "  -t, theharvester script"
-	echo "  -p, haveibeenpwned api (needs -t option)"
+	echo "  -t, theHarvester script (mail- and dns-recon)"
+	echo "  -p, haveibeenpwned api (needs api-key and -t option)"
 	echo "  -z, zero - delete temp-files"
        	echo ""
 	echo "COLLECTIVE INTELLIGENCE:"
@@ -105,55 +105,55 @@ usage() {
 
 while getopts ":d:achowimstpiz" opt; do
 	case ${opt} in
-		h) usage; exit 1;;
-		a) any_modules=1; opt_check=1;;
-		c) colors=1;;
-		d) domain="$OPTARG"; opt_domain=1;
-			if [[ "$domain" = -* ]]; then
+		h) funcHelp; exit 1;;
+		a) _ANY_MODULES=1; _OPT_CHECK=1;;
+		c) _COLORS=1;;
+		d) _DOMAIN="$OPTARG"; _OPT_DOMAIN=1;
+			if [[ "${_DOMAIN}" = -* ]]; then
 				echo "**No domain argument set**"
 				echo ""
-				usage
+				funcHelp
 				exit 1
 			else
-				host -t ns $domain 2>&1 > /dev/null
+				host -t ns ${_DOMAIN} 2>&1 > /dev/null
 				if [ $? -eq 0 ]; then
-					domain="$OPTARG"
+					_DOMAIN="$OPTARG"
 				else
-					echo "**$domain is not a valid domain**"
+					echo "**${_DOMAIN} is not a valid domain**"
 					echo ""
-					usage
+					funcHelp
 					exit 1
 				fi
 			fi
    		;;
-		o) any_osint=1; opt_check=1;;
-		w) webserver_osint=1; opt_check=1;;
-		i) httpheader_osint=1; opt_check=1;;
-		m) mailserver_osint=1; opt_check=1;;
-		s) shodan_osint=1; opt_check=1;;
-		t) theharvester_osint=1; opt_check=1;;
-		p) pwned_osint=1; opt_check=1;;
-		z) zero_del=1; opt_check=1;;
-		\?) echo "**Unknown option: -$OPTARG **" >&2; echo ""; usage; exit 1;;
-        	:) echo "**Missing option argument for -$OPTARG **" >&2; echo ""; usage; exit 1;;
-		*) usage; exit 1;;
+		o) _ANY_OSINT=1; _OPT_CHECK=1;;
+		w) _WEBSERVER_OSINT=1; _OPT_CHECK=1;;
+		i) _HTTPHEADER_OSINT=1; _OPT_CHECK=1;;
+		m) _MAILSERVER_OSINT=1; _OPT_CHECK=1;;
+		s) _SHODAN_OSINT=1; _OPT_CHECK=1;;
+		t) _THEHARVESTER_OSINT=1; _OPT_CHECK=1;;
+		p) _PWNED_OSINT=1; _OPT_CHECK=1;;
+		z) _ZERO_DEL=1; _OPT_CHECK=1;;
+		\?) echo "**Unknown option: -$OPTARG **" >&2; echo ""; funcHelp; exit 1;;
+        	:) echo "**Missing option argument for -$OPTARG **" >&2; echo ""; funcHelp; exit 1;;
+		*) funcHelp; exit 1;;
   	esac
   	done
 	shift $(( OPTIND - 1 ))
 
-#Check if domain set and not zero_del option set
-if [ "$opt_domain" == "" ] && [ "$zero_del" == "" ]; then
+#Check if domain set and not _ZERO_DEL option set
+if [ "${_OPT_DOMAIN}" == "" ] && [ "$_ZERO_DEL" == "" ]; then
 	echo "**No domain set**"
 	echo ""
-	usage
+	funcHelp
 	exit 1
 fi
 
 #Check if a option is set
-if [ "$opt_check" == "" ]; then
+if [ "${_OPT_CHECK}" == "" ]; then
 	echo "**No option set**"
 	echo ""
-	usage
+	funcHelp
 	exit 1
 fi
 
@@ -174,13 +174,13 @@ echo ""
 echo "####################################################################"
 echo "########## Free OCSAF Security Auditor - GNU GPLv3        ##########"
 echo "########## https://freecybersecurity.org                  ##########"
-echo "########## MG(), Version 0.6.4 - Beta (27.05.19)          ##########"
+echo "########## MG(), Version 0.6.5 - Beta (03.11.19)          ##########"
 echo "####################################################################"
 echo ""
 echo $time
 
 #Zero - delete all temp files
-if [ "$zero_del" == "1" ]; then
+if [ "$_ZERO_DEL" == "1" ]; then
 	touch ./inputs/temp/delete_$time
 	rm ./inputs/temp/*
 	echo "##############################"
@@ -190,37 +190,37 @@ if [ "$zero_del" == "1" ]; then
 fi
 
 #MX Records anzeigen - OSINT-Modul
-if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$mailserver_osint" == "1" ]; then
+if [ "${_ANY_MODULES}" == "1" ] || [ "$_ANY_OSINT" == "1" ] || [ "$_MAILSERVER_OSINT" == "1" ]; then
 	echo "############################"
 	echo "####  MAILSERVER-CHECK  ####"
 	echo "############################"
 	echo ""
-	mail_lookup
+	func_mail_lookup
 	echo ""
 fi
 
 #Mail Loadbalance Check - OSINT-Modul
-if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$mailserver_osint" == "1" ]; then
+if [ "$_ANY_MODULES" == "1" ] || [ "$_ANY_OSINT" == "1" ] || [ "$_MAILSERVER_OSINT" == "1" ]; then
 	echo "##################################################"
 	echo "####  HOSTNAME MAIL-SERVER-LOADBALANCE-CHECK  ####"
 	echo "##################################################"
 	echo ""
-	mail_loadbalance
+	func_mail_loadbalance
 	echo ""
 fi
 
 #SPF Check Funktion - OSINT-Modul
-if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$mailserver_osint" == "1" ]; then
+if [ "$_ANY_MODULES" == "1" ] || [ "$_ANY_OSINT" == "1" ] || [ "$_MAILSERVER_OSINT" == "1" ]; then
 	echo "#####################"
 	echo "####  SPF-CHECK  ####"
 	echo "#####################"
 	echo ""
-	spf_check
+	func_spf_check
 	echo ""
 fi
 
 #DMARC Check Funktion - OSINT-Modul
-if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$mailserver_osint" == "1" ]; then
+if [ "$_ANY_MODULES" == "1" ] || [ "$_ANY_OSINT" == "1" ] || [ "$_MAILSERVER_OSINT" == "1" ]; then
 	echo "#######################"
 	echo "####  DMARC-CHECK  ####"
 	echo "#######################"
@@ -230,25 +230,25 @@ if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$mailserver_osint"
 fi
 
 #Webserver Lookup - OSINT-Modul
-if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$webserver_osint" == "1" ]; then
+if [ "$_ANY_MODULES" == "1" ] || [ "$_ANY_OSINT" == "1" ] || [ "$_WEBSERVER_OSINT" == "1" ]; then
 	echo "###################################"
 	echo "####  WEB-SERVER-LOOKUP-CHECK  ####"
 	echo "###################################"
 	echo ""
-	webserver_lookup
+	func_webserver_lookup
 fi
 
 #Webserver Malware Check - OSINT-Modul
-if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$webserver_osint" == "1" ]; then
+if [ "$_ANY_MODULES" == "1" ] || [ "$_ANY_OSINT" == "1" ] || [ "$_WEBSERVER_OSINT" == "1" ]; then
 	echo "####################################"
 	echo "####  WEB-SERVER-MALWARE-CHECK  ####"
 	echo "####################################"
 	echo ""
-	malware_check
+	func_malware_check
 fi
 
 #Webserver CAA Check - OSINT-Modul
-if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$webserver_osint" == "1" ]; then
+if [ "$_ANY_MODULES" == "1" ] || [ "$_ANY_OSINT" == "1" ] || [ "$_WEBSERVER_OSINT" == "1" ]; then
 	echo "#######################################"
 	echo "####  WEB-SERVER-CAA-RECORD-CHECK  ####"
 	echo "#######################################"
@@ -257,7 +257,7 @@ if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$webserver_osint" 
 fi
 
 #Webserver DNSSEC Check - OSINT-Modul
-if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$webserver_osint" == "1" ]; then
+if [ "$_ANY_MODULES" == "1" ] || [ "$_ANY_OSINT" == "1" ] || [ "$_WEBSERVER_OSINT" == "1" ]; then
 	echo "##########################################"
 	echo "####  WEB-SERVER-DNSSEC-RECORD-CHECK  ####"
 	echo "##########################################"
@@ -266,42 +266,42 @@ if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$webserver_osint" 
 fi
 
 #TheHarvester - OSINT-Modul
-if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$theharvester_osint" == "1" ]; then
-	echo "#########################################"
-	echo "####  MAIL Harvester - theharvester  ####"
-	echo "#########################################"
+if [ "$_ANY_MODULES" == "1" ] || [ "$_ANY_OSINT" == "1" ] || [ "$_THEHARVESTER_OSINT" == "1" ]; then
+	echo "#################################################"
+	echo "####  MAIL and DNS Harvester - theHarvester  ####"
+	echo "#################################################"
 	echo ""
-	harvester_osint
+	func_harvester_osint
 fi
 
 #PWNED Check - OSINT-Modul
-if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$pwned_osint" == "1" ]; then
+if [ "$_ANY_MODULES" == "1" ] || [ "$_ANY_OSINT" == "1" ] || [ "$_PWNED_OSINT" == "1" ]; then
 	echo "##############################################"
 	echo "####  MAIL PWNED CHECK - haveeibeenpwned  ####"
 	echo "##############################################"
 	echo ""
-	pwned_check
+	func_pwned_check
 fi
 
 #Shodan.io Check - OSINT-Modul
-if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$shodan_osint" == "1" ]; then
+if [ "$_ANY_MODULES" == "1" ] || [ "$_ANY_OSINT" == "1" ] || [ "$_SHODAN_OSINT" == "1" ]; then
 	echo "####################################"
 	echo "####  SHODAN CHECK - shodan.io  ####"
 	echo "####################################"
 	echo ""
-	shodan_check
+	func_shodan_check
 fi
 
 #HTTP Header Check - Scan-Modul
-if [ "$any_modules" == "1" ] || [ "$any_osint" == "1" ] || [ "$httpheader_osint" == "1" ]; then
+if [ "$_ANY_MODULES" == "1" ] || [ "$_ANY_OSINT" == "1" ] || [ "$_HTTPHEADER_OSINT" == "1" ]; then
 	echo "#############################"
 	echo "####  HTTP HEADER CHECK  ####"
 	echo "#############################"
 	echo ""
-	httpheader_discovery
+	funcHttpheaderDiscovery
 	funcSecurityheaderCheck
-	httpheader_cvedetails_check
-	httpheader_vuln_check
+	funcHttpheaderCvedetailsCheck
+	funcHttpheaderVulnCheck
 fi
 
 ###################### END ######################

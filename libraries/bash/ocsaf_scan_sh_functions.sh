@@ -23,7 +23,7 @@ time=$(date +%d.%m.%Y-%H:%M)
 
 
 ########### HTTP-HEADER DISCOVERY KI-Version ###########
-httpheader_discovery() {
+funcHttpheaderDiscovery() {
 
 #server_version_nr=Output Variable
 local h_value
@@ -33,14 +33,14 @@ local userAgent
 userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:62.0) Gecko/20100101 Firefox/62.0"
 #urlHeader=$(curl --silent --location --insecure --head --user-agent "$userAgent" $checkDomain --http1.1)
 
-if [[ $domain == *.*.* ]]; then
-	#dig $domain +short
-	./libraries/python/httpheader.py -u http://$domain > ./inputs/temp/http_header_$domain-$time.txt
-	#curl --user-agent "${userAgent}" -L -I -s -o ./inputs/temp/http_header_$domain-$time.txt $domain --http1.1
+if [[ $_DOMAIN == *.*.* ]]; then
+	#dig $_DOMAIN +short
+	./libraries/python/httpheader.py -u http://$_DOMAIN > ./inputs/temp/http_header_$_DOMAIN-$time.txt
+	#curl --user-agent "${userAgent}" -L -I -s -o ./inputs/temp/http_header_$_DOMAIN-$time.txt $_DOMAIN --http1.1
 else
-	#dig www.$domain +short
-	./libraries/python/httpheader.py -u http://www.$domain > ./inputs/temp/http_header_$domain-$time.txt
-	#curl --user-agent "${userAgent}" -L -I -s -o ./inputs/temp/http_header_$domain-$time.txt www.$domain --http1.1
+	#dig www.$_DOMAIN +short
+	./libraries/python/httpheader.py -u http://www.$_DOMAIN > ./inputs/temp/http_header_$_DOMAIN-$time.txt
+	#curl --user-agent "${userAgent}" -L -I -s -o ./inputs/temp/http_header_$_DOMAIN-$time.txt www.$_DOMAIN --http1.1
 fi
 
 echo "##############################"
@@ -64,8 +64,8 @@ do
 	h_file_value4=$(echo "$line" | awk -F ';;' '{print $4}')
 	#h_file_value5=$(echo "$line" | awk -F ';;' '{print $5}')
 
-	h_value=$(cat ./inputs/temp/http_header_$domain-$time.txt | grep -i "$h_file_value1" | head -n 1 | sed 's/\r$//')
-	h_value2=$(cat ./inputs/temp/http_header_$domain-$time.txt | grep -i "$h_file_value1" | head -n 2 | tail -n 1 | sed 's/\r$//')
+	h_value=$(cat ./inputs/temp/http_header_$_DOMAIN-$time.txt | grep -i "$h_file_value1" | head -n 1 | sed 's/\r$//')
+	h_value2=$(cat ./inputs/temp/http_header_$_DOMAIN-$time.txt | grep -i "$h_file_value1" | head -n 2 | tail -n 1 | sed 's/\r$//')
 
 	#h_value_version=$(echo ${h_value[*]} | awk -F '$h_file_value1' '{print $2}')
 	h_value_version=$(echo ${h_value[*]} | awk -F ' ' '{print $2}')
@@ -98,7 +98,7 @@ echo ""
 echo "##############################"
 echo "HTTP-Header:"
 echo ""
-cat ./inputs/temp/http_header_$domain-$time.txt
+cat ./inputs/temp/http_header_$_DOMAIN-$time.txt
 
 }
 
@@ -119,7 +119,7 @@ do
 
 	shFileValue1=$(echo "$line" | awk -F ';;' '{print $1}')
 	shFileColor=$(echo "$line" | awk -F ';;' '{print $2}')	
-	urlHeader=$(cat ./inputs/temp/http_header_$domain-$time.txt)
+	urlHeader=$(cat ./inputs/temp/http_header_$_DOMAIN-$time.txt)
 	#echo $shFileColor
 	
 	# Check if security header is set
@@ -166,7 +166,7 @@ local cookie
 }
 
 ########### SECURITY-HEADER-EXPLOIT-DB-CHECK ##########
-httpheader_vuln_check(){
+funcHttpheaderVulnCheck(){
 
 local i
 
@@ -185,7 +185,7 @@ done
 }
 
 ########### SECURITY-HEADER-CVEDETAILS.COM-CHECK ##########
-httpheader_cvedetails_check(){
+funcHttpheaderCvedetailsCheck(){
 
 local i
 
@@ -208,39 +208,6 @@ if [ "$version_nr" != "" ]; then
 	done
 fi
 
-}
-
-############ BLACKLIST-CHECK ############
-#Thanks to Agarzon, Quick Blacklist Check inspired by https://gist.github.com/agarzon/5554490
-2mailserver_blcheck() {
-	#OUTPUT global variable = bl_listed
-	local i
-	local blacklists
-	local reverse_ip
-	local reverse_dns
-	local bl
-	local list
-	local blacklists=$(<./inputs/project/bl/blacklists.txt)
-
-	for ((i=0;i<${#ip_listed[*]};i++))
-	do
-		reverse_ip=$(echo ${ip_listed[$i]} \
-			| sed -ne "s~^\([0-9]\{1,3\}\)\.\([0-9]\{1,3\}\)\.\([0-9]\{1,3\}\)\.\([0-9]\{1,3\}\)$~\4.\3.\2.\1~p")
-		reverse_dns=$(dig +short -x ${ip_listed[$i]})
-		
-		echo IP ${ip_listed[$i]} HOST ${reverse_dns:----}
-		for bl in ${blacklists} ; do
-    			printf "%-60s" " ${reverse_ip}.${bl}."
-    			list="$(dig +short -t a ${reverse_ip}.${bl}.)"
-    			if  [ "$list" == "" ]; then
-				echo -e "${gON}${list:-OK}${cOFF}"
-			else
-				bl_listed+=("${ip_listed[$i]}:$bl")
-				echo -e "${rON}listed: ${list:----}${cOFF}"
-			fi
-		done
-		echo ""
-	done
 }
 
 ################## END ####################

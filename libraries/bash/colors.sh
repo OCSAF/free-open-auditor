@@ -14,7 +14,7 @@
 #Import this as library with 
 #. colors.sh or
 
-if [[ $colors -eq 1 ]]; then
+if [[ ${_COLORS} -eq 1 ]]; then
 	cOFF=''
 
 	blON=''
